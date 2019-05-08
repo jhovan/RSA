@@ -18,7 +18,7 @@ class RSA:
         d1,x1,y1 = self.euclidesExtendido(b, a % b)
         d = d1
         x = y1
-        y = x1 - floor(a/b) * y1
+        y = x1 - (a//b) * y1
         return d, x, y
 
     # implementacion de Miller-Rabin
@@ -81,7 +81,7 @@ class RSA:
     def generarED(self,phi):
         p = self.generarPosiblePrimo()
         g,x,_ = self.euclidesExtendido(p,phi)
-        while g != 1 or p>self.phi:
+        while g != 1 or p > phi:
             p = self.generarPosiblePrimo()
             g,d,_ = self.euclidesExtendido(p,phi)
         return p,d
@@ -92,8 +92,11 @@ class RSA:
         self.n = p*q
         phi = (p-1)*(p-1)
         self.e, self.d = self.generarED(phi)
-        print(self.n)
-        print(self.e)
-        print(self.d)
+        print("p = " + str(p))
+        print("q = " + str(q))
+        print("n = " + str(self.n))
+        print("phi = " + str(phi))
+        print("e = " + str(self.e))
+        print("d = " + str(self.d))
 
 rsa = RSA()
