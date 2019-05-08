@@ -96,7 +96,7 @@ class RSA:
         return p,d
 
     # encripta un mensaje (cadena), 
-    # devuelve un entero
+    # devuelve un arreglo de bytes
     def encriptar(self, mensaje):
         byte_array = mensaje.encode('ascii')
         m = int.from_bytes(byte_array, byteorder='big')
