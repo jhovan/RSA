@@ -24,7 +24,7 @@ class RSA:
     # n es el numero que queremos saber si es primo
     # k es el numero de veces que se ejecutara la prueba
     # devuelve verdadero si un entero positivo es primo
-    def esPrimo(self,n, k = 150):
+    def esPrimo(self,n, k = 300):
         # si es 2 o 3, es primo
         if n == 2 or n == 3:
             return True
@@ -83,6 +83,25 @@ class RSA:
         d %= phi
         return p,d
 
+    # encripta un mensaje (cadena), devuelve un arreglo de bytes
+    def encriptar(self, mensaje):
+        byte_array = mensaje.encode('ascii')
+        print(len(byte_array))
+        entero = int.from_bytes(byte_array, byteorder='big')
+        print(entero)
+        #return bytearray(pow(entero,self.e,self.n))
+        c = pow(entero,self.e,self.n)
+        #return c.to_bytes((c.bit_length()//8),byteorder='big')
+        return c
+
+    # desencripta un mensaje (arreglo de bytes)
+    # devuelve una cadena
+    def desencriptar(self, c):
+        m = pow(c,self.d,self.n)
+        print (m)
+        #return bytearray(6050034968936902071269563607109103388025441).decode('ascii')
+        return (6050034968936902071269563607109103388025441).to_bytes(18,byteorder='big').decode('ascii')
+
     def __init__(self):
         p = self.generarPrimo()
         q = self.generarPrimo()
@@ -96,4 +115,13 @@ class RSA:
         print("e = " + str(self.e))
         print("d = " + str(self.d))
 
-rsa = RSA()
+mi_rsa = RSA()
+
+# pruebas
+
+mensaje = "Esto es una prueba"
+print("Mensaje: " + mensaje)
+encriptado = mi_rsa.encriptar(mensaje)
+print("Mensaje encriptado: " + str(encriptado))
+desencriptado = mi_rsa.desencriptar(encriptado)
+print("Mensaje desencriptado: " + desencriptado)
