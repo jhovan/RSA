@@ -2,7 +2,6 @@ from math import log10,ceil,floor
 from random import getrandbits,randrange,randint
 
 num_bits = 1024
-min_digitos = 100
 
 class RSA:
 
@@ -25,47 +24,44 @@ class RSA:
     # n es el numero que queremos saber si es primo
     # k es el numero de veces que se ejecutara la prueba
     # devuelve verdadero si un entero positivo es primo
-    def esPrimo(self,n, k = 300):
+    def esPrimo(self,n, k = 150):
         # si es 2 o 3, es primo
         if n == 2 or n == 3:
             return True
         # si es par, no es primo
-        if n%2 == 0:
+        if n & 1 == 0:
             return False
-        s = 0
-        r = n - 1
-        while(r % 2 == 1):
-            s += 1
-            r //= 2 # division entera
+        # descomponemos a n en la forma (2^r)*d + 1
+        r = 0
+        d = n - 1
+        # mientras d sea par
+        while d & 1 == 0:
+            r += 1
+            d //= 2 # division entera
         # hace la prueba k veces
         for _ in range(k):
             a = randrange(2, n - 1)
-            x = pow(a,r,n) #a^r mod n
-            if x != 1 and x != n - 1:
-                j=1
-                while x != n - 1 and j<s:
-                    x = pow(x,2,n)
-                    if(x == 1):
-                        return False
-                    j += 1
-                if x != n - 1:
+            x = pow(a,d,n) #a^d mod n
+            if x == 1 or x == n - 1:
+                continue
+            for _ in range(r-1):
+                x = pow(x,2,n)
+                if x == 1:
                     return False
+                if x == n - 1:
+                    break
+            return False
         # si la prueba no detecta que sea compuesto k veces
         # devuelve verdadero
         return True
 
-
-    # genera un numero aleatorio que ademas es impar 
-    # de al menos 100 digitos
-    # y a lo mas 1024 bits
+    # genera un numero aleatorio que ademas es impar y de 1024 bits
     def generarPosiblePrimo(self):
-        # numero de bits necesarios para representar un numero
-        # del numero de digitos especificado
-        bit_min_digitos = ceil((min_digitos)/log10(2))
+        # generamos un numero aleatorio de num_bits bits
         n = getrandbits(num_bits)
         # forzamos a que sea impar 
         # y que tenga al menos el numero de digitos especificado
-        n |= (1 << randint(bit_min_digitos-1,num_bits-1)) | 1
+        n |= (1 << num_bits - 1) | 1
         return n
 
    # genera un primo aleatorio de al menos 100 digitos
@@ -80,10 +76,11 @@ class RSA:
     # d es su inverso modulo phi
     def generarED(self,phi):
         p = self.generarPosiblePrimo()
-        g,x,_ = self.euclidesExtendido(p,phi)
+        g,d,_ = self.euclidesExtendido(p,phi)
         while g != 1 or p > phi:
             p = self.generarPosiblePrimo()
             g,d,_ = self.euclidesExtendido(p,phi)
+        d %= phi
         return p,d
 
     def __init__(self):
