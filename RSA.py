@@ -98,7 +98,7 @@ class RSA:
     # encripta un mensaje (cadena), 
     # devuelve un arreglo de bytes
     def encriptar(self, mensaje):
-        byte_array = mensaje.encode('ascii')
+        byte_array = mensaje.encode('utf-8')
         m = int.from_bytes(byte_array, byteorder='big')
         c = pow(m,self.e,self.n)
         return c.to_bytes(message_max_length,byteorder='big')
@@ -108,7 +108,7 @@ class RSA:
     def desencriptar(self, byte_array):
         c = int.from_bytes(byte_array, byteorder='big')
         m = pow(c,self.d,self.n)
-        return (m).to_bytes(message_max_length,byteorder='big').decode('ascii')
+        return (m).to_bytes(message_max_length,byteorder='big').decode('utf-8')
 
     def __init__(self):
         p = self.generarPrimo()
@@ -128,7 +128,7 @@ mi_rsa = RSA()
 # pruebas
 
 print("\nPRUEBAS\n")
-mensaje = "Esto es una prueba"
+mensaje = "Esto es uña prueba"
 print("Mensaje original: " + mensaje)
 encriptado = mi_rsa.encriptar(mensaje)
 print("Mensaje encriptado: " + str(encriptado))
