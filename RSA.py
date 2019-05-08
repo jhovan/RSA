@@ -1,8 +1,9 @@
+#-*- coding: utf-8 -*-
 from math import log10,ceil,floor
 from random import getrandbits,randrange,randint
 
 # Tamaño de los primos generados en bits
-num_bits = 1024
+num_bits = 336
 # Tamaño maximo de n en bytes 
 # El numero mas grande posible n = p*q tiene 619 digitos
 # Para los que se necesitan 2053 bits para representar
@@ -96,21 +97,25 @@ class RSA:
         return p,d
 
     # encripta un mensaje (cadena), 
-    # devuelve un arreglo de bytes
-    def encriptar(self, mensaje):
-        byte_array = mensaje.encode('utf-8')
-        m = int.from_bytes(byte_array, byteorder='big')
-        c = pow(m,self.e,self.n)
-        return c.to_bytes(message_max_length,byteorder='big')
+    #Recibe el mensaje en texto claro y la llave publica
+    # devuelve un entero c = m^e mod n 
+    def encriptar(self, mensaje, e,n):
+        cipher = [pow(ord(char), e, n) for char in mensaje]
+        return cipher
+
 
     # desencripta un mensaje (arreglo de bytes)
     # devuelve una cadena
-    def desencriptar(self, byte_array):
-        c = int.from_bytes(byte_array, byteorder='big')
-        m = pow(c,self.d,self.n)
-        return (m).to_bytes(message_max_length,byteorder='big').decode('utf-8')
+    def desencriptar(self, mensaje, d,n):
+        decipher = [ chr(pow(char, d, n)) for char in mensaje]
+        return ''.join(decipher)
+
+
 
     def __init__(self):
+        print("-------------------------------------")
+        print ("|  Criptografía y seguridad\n|  Proyecto 02\n|  Gallardo Valdez José Jhovan\n|  Guerrero Chávez Diana Lucía")
+        print("-------------------------------------\n")
         p = self.generarPrimo()
         q = self.generarPrimo()
         self.n = p*q
@@ -126,12 +131,12 @@ class RSA:
 mi_rsa = RSA()
 
 # pruebas
-
 print("\nPRUEBAS\n")
-mensaje = "Esto es uña prueba"
-print("Mensaje original: " + mensaje)
-encriptado = mi_rsa.encriptar(mensaje)
+mensaje = "en esta casa obedecemos las leyes de la termodinámica"
+print("Mensaje original: " + mensaje+"\n")
+encriptado = mi_rsa.encriptar(mensaje,mi_rsa.e,mi_rsa.n)
 print("Mensaje encriptado: " + str(encriptado))
-desencriptado = mi_rsa.desencriptar(encriptado)
-print("Mensaje desencriptado: " + desencriptado)
+
+desencriptado = mi_rsa.desencriptar(encriptado,mi_rsa.d,mi_rsa.n)
+print("\nMensaje desencriptado: " + desencriptado)
 
