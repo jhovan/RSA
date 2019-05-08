@@ -1,7 +1,19 @@
 from math import log10,ceil,floor
 from random import getrandbits,randrange,randint
 
+# Tamaño de los primos generados en bits
 num_bits = 1024
+# Tamaño maximo de n en bytes 
+# El numero mas grande posible n = p*q tiene 619 digitos
+# Para los que se necesitan 2053 bits para representar
+# Que a su vez son 257 bytes (ceiling)
+message_max_length = 257 
+# El mensaje debe tener a lo mas 255 caracteres
+# Para no perder informacion
+# Esto se calcula considerando el n = p*q más pequeño posible
+# Que tiene 616 digitos
+# Para los que se necesitan 2047 bits para representar
+# Que a su vez son 255 bytes (floor)
 
 class RSA:
 
@@ -83,30 +95,26 @@ class RSA:
         d %= phi
         return p,d
 
-    # encripta un mensaje (cadena), devuelve un arreglo de bytes
+    # encripta un mensaje (cadena), 
+    # devuelve un entero
     def encriptar(self, mensaje):
         byte_array = mensaje.encode('ascii')
-        print(len(byte_array))
-        entero = int.from_bytes(byte_array, byteorder='big')
-        print(entero)
-        #return bytearray(pow(entero,self.e,self.n))
-        c = pow(entero,self.e,self.n)
-        #return c.to_bytes((c.bit_length()//8),byteorder='big')
-        return c
+        m = int.from_bytes(byte_array, byteorder='big')
+        c = pow(m,self.e,self.n)
+        return c.to_bytes(message_max_length,byteorder='big')
 
     # desencripta un mensaje (arreglo de bytes)
     # devuelve una cadena
-    def desencriptar(self, c):
+    def desencriptar(self, byte_array):
+        c = int.from_bytes(byte_array, byteorder='big')
         m = pow(c,self.d,self.n)
-        print (m)
-        #return bytearray(6050034968936902071269563607109103388025441).decode('ascii')
-        return (6050034968936902071269563607109103388025441).to_bytes(18,byteorder='big').decode('ascii')
+        return (m).to_bytes(message_max_length,byteorder='big').decode('ascii')
 
     def __init__(self):
         p = self.generarPrimo()
         q = self.generarPrimo()
         self.n = p*q
-        phi = (p-1)*(p-1)
+        phi = (p-1)*(q-1)
         self.e, self.d = self.generarED(phi)
         print("p = " + str(p))
         print("q = " + str(q))
@@ -119,9 +127,11 @@ mi_rsa = RSA()
 
 # pruebas
 
+print("\nPRUEBAS\n")
 mensaje = "Esto es una prueba"
-print("Mensaje: " + mensaje)
+print("Mensaje original: " + mensaje)
 encriptado = mi_rsa.encriptar(mensaje)
 print("Mensaje encriptado: " + str(encriptado))
 desencriptado = mi_rsa.desencriptar(encriptado)
 print("Mensaje desencriptado: " + desencriptado)
+
