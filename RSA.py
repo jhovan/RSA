@@ -3,18 +3,8 @@ from math import log10,ceil,floor
 from random import getrandbits,randrange,randint
 
 # Tamaño de los primos generados en bits
+# 336 bits genera numeros de 101 digitos
 num_bits = 336
-# Tamaño maximo de n en bytes 
-# El numero mas grande posible n = p*q tiene 619 digitos
-# Para los que se necesitan 2053 bits para representar
-# Que a su vez son 257 bytes (ceiling)
-message_max_length = 257 
-# El mensaje debe tener a lo mas 255 caracteres
-# Para no perder informacion
-# Esto se calcula considerando el n = p*q más pequeño posible
-# Que tiene 616 digitos
-# Para los que se necesitan 2047 bits para representar
-# Que a su vez son 255 bytes (floor)
 
 class RSA:
 
