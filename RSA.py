@@ -123,15 +123,18 @@ class RSA:
         print("e = " + str(self.e))
         print("d = " + str(self.d))
 
-mi_rsa = RSA()
+        
+if __name__ == "__main__":
+    
+    mi_rsa = RSA()
 
-# pruebas
+    # pruebas
 
-print("\nPRUEBAS\n")
-mensaje = "Esto es uña prueba"
-print("Mensaje original: " + mensaje)
-encriptado = mi_rsa.encriptar(mensaje)
-print("Mensaje encriptado: " + str(encriptado))
-desencriptado = mi_rsa.desencriptar(encriptado)
-print("Mensaje desencriptado: " + desencriptado)
+    print("\nPRUEBAS\n")
+    mensaje = "Esto es uña prueba"
+    print("Mensaje original: " + mensaje)
+    encriptado = mi_rsa.encriptar(mensaje)
+    print("Mensaje encriptado: " + str(encriptado))
+    desencriptado = mi_rsa.desencriptar(encriptado)
+    print("Mensaje desencriptado: " + desencriptado)
 
